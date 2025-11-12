@@ -1,0 +1,45 @@
+
+---
+
+## 💻 **Código principal (`analisador_vendas.py`)**
+
+```python
+import pandas as pd
+
+def carregar_dados(arquivo_csv):
+    """Carrega o arquivo CSV e retorna um DataFrame."""
+    try:
+        df = pd.read_csv(arquivo_csv)
+        return df
+    except FileNotFoundError:
+        print("❌ Arquivo não encontrado. Verifique o caminho e tente novamente.")
+        return None
+
+def total_vendas_por_vendedor(df):
+    """Calcula o total de vendas por vendedor."""
+    return df.groupby("vendedor")["valor"].sum()
+
+def produto_mais_vendido(df):
+    """Retorna o produto mais vendido."""
+    return df.groupby("produto")["quantidade"].sum().idxmax()
+
+def media_diaria_vendas(df):
+    """Calcula a média diária de vendas."""
+    vendas_diarias = df.groupby("data")["valor"].sum()
+    return vendas_diarias.mean()
+
+def exibir_relatorio(df):
+    """Exibe os resultados de forma organizada."""
+    print("\n📊 RELATÓRIO DE VENDAS 📊")
+    print("-" * 40)
+    print("\n💼 Total de vendas por vendedor:")
+    print(total_vendas_por_vendedor(df))
+    print(f"\n🏆 Produto mais vendido: {produto_mais_vendido(df)}")
+    print(f"\n📅 Média diária de vendas: R$ {media_diaria_vendas(df):.2f}")
+
+if __name__ == "__main__":
+    caminho = input("Informe o caminho do arquivo CSV: ")
+    dados = carregar_dados(caminho)
+
+    if dados is not None:
+        exibir_relatorio(dados)
